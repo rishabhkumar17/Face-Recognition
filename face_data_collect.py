@@ -1,5 +1,5 @@
 import cv2
-import numpy as np
+import numpy
 
 cap = cv2.VideoCapture(0)
 
@@ -10,6 +10,7 @@ face_data = []
 dataset_path = './Datasets/'
 
 file_name = input('Name of the person: ')
+
 while True:
 	ret,frame = cap.read()
 
@@ -27,7 +28,7 @@ while True:
 		cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,255),2)
 
 		offset = 10
-		face_section  = frame[y-offset:y+h+offset, x-offset:x+w+offset]
+		face_section = frame[y-offset:y+h+offset, x-offset:x+w+offset]
 		face_section = cv2.resize(face_section,(100,100))
 
 		skip +=1
@@ -35,18 +36,19 @@ while True:
 			face_data.append(face_section)
 			print(len(face_data))
 
-	cv2.imshow('Frame', frame)
-	cv2.imshow('Face section', face_section) 
-	
+
+		cv2.imshow('Frame', frame)
+		cv2.imshow('Face section', face_section)
+
 	key_pressed = cv2.waitKey(1) & 0xFF
 	if key_pressed == ord('q'):
 		break
 
-face_data = np.asarray(face_data)
+face_data = numpy.asarray(face_data)
 face_data = face_data.reshape((face_data.shape[0],-1))
 print(face_data.shape)
 
-np.save(dataset_path+file_name+'.npy',face_data)
+numpy.save(dataset_path+file_name+'.npy',face_data)
 print('File successfully saved at '+dataset_path+file_name+'.npy')
 
 cap.release()
