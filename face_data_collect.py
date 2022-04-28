@@ -1,5 +1,5 @@
 import cv2
-import numpy
+import numpy as np
 
 cap = cv2.VideoCapture(0)
 
@@ -42,11 +42,11 @@ while True:
 	if key_pressed == ord('q'):
 		break
 
-face_data = numpy.asarray(face_data)
+face_data = np.asarray(face_data)
 face_data = face_data.reshape((face_data.shape[0],-1))
 print(face_data.shape)
 
-numpy.save(dataset_path+file_name+'.npy',face_data)
+np.save(dataset_path+file_name+'.npy',face_data)
 print('File successfully saved at '+dataset_path+file_name+'.npy')
 
 cap.release()
