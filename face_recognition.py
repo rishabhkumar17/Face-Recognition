@@ -55,8 +55,8 @@ for fx in os.listdir(dataset_path):
         class_id += 1
         labels.append(target)
 
-face_dataset = np.concatenate(face_data,axis=0)
-face_labels = np.concatenate(labels,axis=0)
+face_dataset = np.concatenate((face_data),axis=0)
+face_labels = np.concatenate((labels),axis=0)
 
 print(face_dataset.shape)
 print(face_labels.shape)
