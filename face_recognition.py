@@ -1,28 +1,62 @@
+import cv2
 import numpy as np
 import os
-import cv2
 
-def dist(x1,x2):
-    return np.sqrt(sum((x1-x2)**2)) # Euclidean distance
+def dist(v1,v2):
 
-def knn(X,Y,queryPoint,k=5):
-    
-    vals = []
-    m = X.shape[0]
-    
-    for i in range(m):
-        d = dist(queryPoint, X[i])
-        vals.append((d,Y[i]))
+    return np.sqrt(sum((v1-v2)**2)) # Euclidean distance
+
+# KNN
+def knn(train,test,k=5):
+    dist = []
+
+    for i in range(train.shape[0]):
+
+        ix = train[i, :-1]
+        iy = train[i, :-1]
+
+        d  = dist(test, ix)
+        dist.append([d, iy])
         
-    vals = sorted(vals)
+    dk = sorted(dist, key=lambda x: x[0])[:k]
     
-    vals = vals[:k]
-    vals = np.array(vals)
+    labels = np.array(dk)[:, -1]
     
-    new_vals = np.unique(vals[:,1], return_counts = True)
+    output = np.unique(labels, return_counts = True)
     print(new_vals)
     
-    index = new_vals[1].argmax()
-    pred = new_vals[0][index]
-    
-    return pred
+    index = np.argmax(output[1])
+    return output[0][index]
+################################################
+
+cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+
+face_cascade = cv2.CascadeClassifier("Datasets/haarcascade_frontalface_alt.xml")
+
+skip = 0
+dataset_path = 'Datasets/'
+
+face_data = []
+labels = []
+
+class_id = 0 # labels for the given file
+names = {} #Mapping between id and name
+
+# Data Preperation
+for fx in os.listdir(dataset_path):
+    if fx.endswith('.npy'):
+
+        print("Loaded "+fx)
+        data_item = np.load(dataset_path+fx)
+        face_data.append(data_item)
+
+        # create labels for the class
+        target = class_id*np.ones((data_item.shape[0],))
+        class_id += 1
+        labels.append(target)
+
+face_dataset = np.concatenate(face_data,axis=0)
+face_labels = np.concatenate(labels,axis=0)
+
+print(face_dataset.shape)
+print(face_labels.shape)
